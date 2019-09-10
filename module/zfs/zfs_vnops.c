@@ -4442,7 +4442,7 @@ zfs_putpage(struct inode *ip, struct page *pp, struct writeback_control *wbc)
 	uint64_t	mtime[2], ctime[2];
 	sa_bulk_attr_t	bulk[3];
 	int		cnt = 0;
-	struct address_space *mapping;
+	// struct address_space *mapping;
 
 	ZFS_ENTER(zfsvfs);
 	ZFS_VERIFY_ZP(zp);
@@ -4505,49 +4505,49 @@ zfs_putpage(struct inode *ip, struct page *pp, struct writeback_control *wbc)
 	 * will be as is expected and it can be written out.  However, if
 	 * the page state has changed it must be handled accordingly.
 	 */
-	mapping = pp->mapping;
-	redirty_page_for_writepage(wbc, pp);
-	unlock_page(pp);
+	// mapping = pp->mapping;
+	// redirty_page_for_writepage(wbc, pp);
+	// unlock_page(pp);
 
 	locked_range_t *lr = rangelock_enter(&zp->z_rangelock,
 	    pgoff, pglen, RL_WRITER);
-	lock_page(pp);
+	// lock_page(pp);
 
 	/* Page mapping changed or it was no longer dirty, we're done */
-	if (unlikely((mapping != pp->mapping) || !PageDirty(pp))) {
-		unlock_page(pp);
-		rangelock_exit(lr);
-		ZFS_EXIT(zfsvfs);
-		return (0);
-	}
+	// if (unlikely((mapping != pp->mapping) || !PageDirty(pp))) {
+	// 	unlock_page(pp);
+	// 	rangelock_exit(lr);
+	// 	ZFS_EXIT(zfsvfs);
+	// 	return (0);
+	// }
 
 	/* Another process started write block if required */
-	if (PageWriteback(pp)) {
-		unlock_page(pp);
-		rangelock_exit(lr);
+	// if (PageWriteback(pp)) {
+	// 	unlock_page(pp);
+	// 	rangelock_exit(lr);
 
-		if (wbc->sync_mode != WB_SYNC_NONE) {
-			if (PageWriteback(pp))
-				wait_on_page_bit(pp, PG_writeback);
-		}
+	// 	if (wbc->sync_mode != WB_SYNC_NONE) {
+	// 		if (PageWriteback(pp))
+	// 			wait_on_page_bit(pp, PG_writeback);
+	// 	}
 
-		ZFS_EXIT(zfsvfs);
-		return (0);
-	}
+	// 	ZFS_EXIT(zfsvfs);
+	// 	return (0);
+	// }
 
 	/* Clear the dirty flag the required locks are held */
-	if (!clear_page_dirty_for_io(pp)) {
-		unlock_page(pp);
-		rangelock_exit(lr);
-		ZFS_EXIT(zfsvfs);
-		return (0);
-	}
+	// if (!clear_page_dirty_for_io(pp)) {
+	// 	unlock_page(pp);
+	// 	rangelock_exit(lr);
+	// 	ZFS_EXIT(zfsvfs);
+	// 	return (0);
+	// }
 
 	/*
 	 * Counterpart for redirty_page_for_writepage() above.  This page
 	 * was in fact not skipped and should not be counted as if it were.
 	 */
-	wbc->pages_skipped--;
+	// wbc->pages_skipped--;
 	set_page_writeback(pp);
 	unlock_page(pp);
 
